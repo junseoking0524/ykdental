@@ -53,11 +53,11 @@ section{padding:190px 0;}
 .eyebrow::before{content:"";width:26px;height:1px;background:var(--gold);}
 
 /* ---------- SCROLL REVEAL ---------- */
-.reveal{opacity:0;transition:opacity 1.3s cubic-bezier(.19,.72,.24,1), transform 1.3s cubic-bezier(.19,.72,.24,1);will-change:opacity,transform;}
+.reveal{opacity:0;filter:blur(9px);transition:opacity 1.3s cubic-bezier(.19,.72,.24,1), transform 1.3s cubic-bezier(.19,.72,.24,1), filter 1.1s ease;will-change:opacity,transform,filter;}
 .reveal-left{transform:translateX(-56px);}
 .reveal-right{transform:translateX(56px);}
 .reveal-up{transform:translateY(34px);}
-.reveal.in-view{opacity:1;transform:translateX(0) translateY(0);}
+.reveal.in-view{opacity:1;transform:translateX(0) translateY(0);filter:blur(0);}
 .d1{transition-delay:.08s;}
 .d2{transition-delay:.16s;}
 .d3{transition-delay:.24s;}
@@ -71,6 +71,23 @@ section{padding:190px 0;}
 .wf-step.wf-slow.d3{transition-delay:.39s;}
 .wf-step.wf-slow.d4{transition-delay:.56s;}
 .wf-step.wf-slow.d5{transition-delay:.73s;}
+/* NOTE: .wf-slow.reveal-left and .reveal.in-view share specificity (0,2,0);
+   without the rule below, source order alone decided the winner and the
+   translateX(-80px) from .wf-slow.reveal-left kept winning even after
+   in-view was added — the box never slid back to 0 and its left edge sat
+   permanently off-screen (the "clipped process box" bug). A 3-class
+   selector forces this to win regardless of order. */
+.reveal.in-view.wf-slow{transform:translateX(0) translateY(0);filter:blur(0);}
+
+/* ---------- SLOWER CASCADE (re-usable) ----------
+   Same idea as wf-slow but for any grid — used on the Solution/products
+   cards for a calmer, more readable stagger. */
+.cascade-slow.reveal{transition-duration:1.6s;transition-property:opacity, transform, filter;transition-timing-function:cubic-bezier(.19,.72,.24,1);}
+.cascade-slow.d1{transition-delay:.06s;}
+.cascade-slow.d2{transition-delay:.26s;}
+.cascade-slow.d3{transition-delay:.46s;}
+.cascade-slow.d4{transition-delay:.66s;}
+.reveal.in-view.cascade-slow{transform:translateX(0) translateY(0);filter:blur(0);}
 @media (prefers-reduced-motion: reduce){
   .reveal{opacity:1 !important;transform:none !important;transition:none !important;}
 }
@@ -113,6 +130,7 @@ header{
 
 /* ---------- HERO ---------- */
 .hero{
+  width:100%;
   background:linear-gradient(180deg,#FCFDFE 0%, #F1F6FA 62%, #ECF2F8 100%);
   color:var(--navy);
   position:relative;
@@ -722,42 +740,42 @@ header.scrolled{background:rgba(251,250,245,0.97);}
     </div>
 
     <div class="products-grid">
-      <div class="product-card reveal reveal-left d1">
+      <div class="product-card reveal reveal-left cascade-slow d1">
         <div class="product-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4c2 1.2 4 1.2 6 0s4-1.2 6 0c0 6-2 9-3 13-.6 2-2 2-2.5 0-.5-2-1-4-1.5-4s-1 2-1.5 4c-.5 2-1.9 2-2.5 0-1-4-3-7-3-13Z"/></svg></div>
         <h3>Zirconia</h3>
         <span class="kr">지르코니아</span>
         <p>고강도·고심미 지르코니아 크라운 및 브릿지 제작</p>
         <span class="product-detail">STRENGTH · 고강도 지르코니아</span>
       </div>
-      <div class="product-card reveal reveal-up d2">
+      <div class="product-card reveal reveal-up cascade-slow d2">
         <div class="product-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5h8l-1 3H9L8 5Z"/><path d="M9 8v3h6V8"/><path d="M10 11v9M14 11v9"/><path d="M10 13h4M10 15h4M10 17h4"/></svg></div>
         <h3>Implant Custom Abutment</h3>
         <span class="kr">임플란트 커스텀 어버트먼트</span>
         <p>임플란트 맞춤형 어버트먼트 및 상부 보철 설계</p>
         <span class="product-detail">PRECISION FIT · 정밀 접합</span>
       </div>
-      <div class="product-card reveal reveal-right d3">
+      <div class="product-card reveal reveal-right cascade-slow d3">
         <div class="product-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18c-1-6 1-11 6-13 5 2 7 7 6 13-4-3-8-3-12 0Z"/></svg></div>
         <h3>All-Ceramic · Laminate</h3>
         <span class="kr">올세라믹 · 라미네이트</span>
         <p>자연 치아에 가까운 심미 라미네이트·올세라믹</p>
         <span class="product-detail">NATURAL LOOK · 자연치 심미</span>
       </div>
-      <div class="product-card reveal reveal-left d1">
+      <div class="product-card reveal reveal-left cascade-slow d1">
         <div class="product-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6c2 1 4 1 7 1s5 0 7-1c0 6-2 10-4 13-1 1-2 1-3-1-1 2-2 2-3 1-2-3-4-7-4-13Z"/><path d="M9 6.5c1 4 1 8 3 12" opacity="0.55"/></svg></div>
         <h3>PFM · Crown &amp; Inlay</h3>
         <span class="kr">PFM · 크라운 · 인레이</span>
         <p>내구성과 정확도를 동시에 갖춘 기본 보철</p>
         <span class="product-detail">DURABLE CORE · 내구 코어</span>
       </div>
-      <div class="product-card reveal reveal-up d2">
+      <div class="product-card reveal reveal-up cascade-slow d2">
         <div class="product-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9c0-3 3.5-5 8-5s8 2 8 5c0 4-2 7-4 8-1 .5-1.5 0-1.5-1v-2c0-1-1-1-1 0v2.3c0 1-.6 1.4-1.5 1-2-1-4.5-4-6-8Z"/><path d="M8 8v2M12 7.5v2M16 8v2" opacity="0.6"/></svg></div>
         <h3>Denture</h3>
         <span class="kr">틀니</span>
         <p>부분·완전 틀니 제작 및 정밀 교합 조정</p>
         <span class="product-detail">CUSTOM FIT · 맞춤 교합</span>
       </div>
-      <div class="product-card reveal reveal-right d3">
+      <div class="product-card reveal reveal-right cascade-slow d3">
         <div class="product-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10c0-3.3 3.5-6 8-6s8 2.7 8 6c0 4-2 7.5-4 8.5"/><circle cx="7" cy="9" r="0.7" fill="currentColor" stroke="none"/><circle cx="10" cy="7.5" r="0.7" fill="currentColor" stroke="none"/><circle cx="13" cy="7" r="0.7" fill="currentColor" stroke="none"/><circle cx="16" cy="8" r="0.7" fill="currentColor" stroke="none"/><circle cx="18" cy="10" r="0.7" fill="currentColor" stroke="none"/></svg></div>
         <h3>Digital Denture</h3>
         <span class="kr">디지털 틀니</span>
@@ -928,12 +946,11 @@ backToTopBtn.addEventListener('click', function(){
     els.forEach(function(el){ el.classList.add('in-view'); });
     return;
   }
+  // replays every time an element crosses into/out of view, in either
+  // scroll direction, instead of firing once and unobserving.
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
-      if(entry.isIntersecting){
-        entry.target.classList.add('in-view');
-        io.unobserve(entry.target);
-      }
+      entry.target.classList.toggle('in-view', entry.isIntersecting);
     });
   }, {threshold:0.15, rootMargin:'0px 0px -70px 0px'});
   els.forEach(function(el){ io.observe(el); });
