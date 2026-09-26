@@ -63,7 +63,6 @@ section{padding:190px 0;}
 .d3{transition-delay:.24s;}
 .d4{transition-delay:.32s;}
 .d5{transition-delay:.4s;}
-/* workflow: slower, more pronounced left-to-right cascade for readability */
 .wf-slow.reveal{transition-duration:1.7s, 1.7s;transition-property:opacity, transform;transition-timing-function:cubic-bezier(.19,.72,.24,1);}
 .wf-slow.reveal-left{transform:translateX(-80px);}
 .wf-step.wf-slow.d1{transition-delay:.05s;}
@@ -336,7 +335,7 @@ header{
 footer{padding:52px 0 38px;background:var(--navy);color:rgba(239,233,220,0.6);}
 .foot-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;}
 .foot-logo{display:flex;align-items:center;gap:11px;}
-.foot-logo img{width:28px;height:28px;object-fit:contain;}
+.foot-logo img{width:34px;height:34px;object-fit:contain;}
 .foot-logo .en{font-weight:800;font-size:13.5px;color:#F7F3E9;}
 .foot-logo .kr{font-family:'IBM Plex Mono';font-size:9px;color:rgba(228,204,150,0.6);}
 .foot-grid{font-size:11.5px;text-align:right;line-height:1.85;}
@@ -363,11 +362,13 @@ footer{padding:52px 0 38px;background:var(--navy);color:rgba(239,233,220,0.6);}
   .burger{display:flex;}
   .foot-inner{flex-direction:column;align-items:flex-start;}
   .foot-grid{text-align:left;}
+  .hero-mark{width:54px;height:54px;top:94px;right:22px;}
 }
 @media (max-width:560px){
   section{padding:80px 0;}
   .hero{padding:104px 0 48px;}
   #workflow{padding-top:96px;}
+  .about-actions{flex-direction:column;}
   .wf-grid{grid-template-columns:1fr;}
   .products-grid{grid-template-columns:1fr;}
   .gallery-grid{grid-template-columns:1fr 1fr;}
@@ -377,14 +378,12 @@ footer{padding:52px 0 38px;background:var(--navy);color:rgba(239,233,220,0.6);}
   .contact-card{padding:24px;}
 }
 
-/* ---------- MOBILE: TRIM SECONDARY ENGLISH ---------- */
 @media (max-width:768px){
   .hero-en, .h2-en, .wf-title-en, .stat-label .en, .equip-card .en, .navlinks a .sub{
     display:none;
   }
 }
 
-/* ---------- DESKTOP: READABILITY BOOST ---------- */
 @media (min-width:900px){
   body{font-size:18px;line-height:1.8;}
   .lead{font-size:18.5px;max-width:640px;}
@@ -393,9 +392,64 @@ footer{padding:52px 0 38px;background:var(--navy);color:rgba(239,233,220,0.6);}
   .equip-card p{font-size:14.5px;line-height:1.65;}
   .info-row .v{font-size:17px;}
 }
+
+.scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--royal),var(--cyan),var(--gold));
+  z-index:200;}
+
+.nav{transition:height .3s ease;}
+header.scrolled .nav{height:60px;}
+header.scrolled{background:rgba(251,250,245,0.97);}
+
+.burger{position:relative;z-index:160;width:26px;height:18px;flex-direction:column;justify-content:space-between;cursor:pointer;background:none;border:0;padding:0;}
+.burger span{display:block;width:100%;height:2px;background:var(--navy);transition:transform .3s ease, opacity .3s ease, background .3s ease;}
+.burger.open span:nth-child(1){transform:translateY(8px) rotate(45deg);}
+.burger.open span:nth-child(2){opacity:0;}
+.burger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg);}
+.mobile-nav-overlay{
+  position:fixed;inset:0;background:var(--navy);z-index:150;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+  opacity:0;visibility:hidden;transform:translateY(-14px);
+  transition:opacity .4s ease, transform .4s ease, visibility .4s;
+}
+.mobile-nav-overlay.open{opacity:1;visibility:visible;transform:translateY(0);}
+.mobile-nav-overlay a{
+  font-size:26px;font-weight:800;color:#F7F3E9;opacity:0;transform:translateY(14px);
+  transition:opacity .5s ease, transform .5s ease;text-align:center;
+}
+.mobile-nav-overlay.open a{opacity:1;transform:translateY(0);}
+.mobile-nav-overlay a:nth-child(1){transition-delay:.08s;}
+.mobile-nav-overlay a:nth-child(2){transition-delay:.14s;}
+.mobile-nav-overlay a:nth-child(3){transition-delay:.2s;}
+.mobile-nav-overlay a:nth-child(4){transition-delay:.26s;}
+.mobile-nav-overlay a:nth-child(5){transition-delay:.32s;}
+.mobile-nav-overlay a:nth-child(6){transition-delay:.38s;}
+.mobile-nav-overlay a .msub{display:block;font-family:'IBM Plex Mono';font-size:11px;color:var(--gold-light);margin-top:5px;letter-spacing:.12em;font-weight:400;}
+.mobile-nav-overlay a.mcta{color:var(--navy);background:var(--gold-light);padding:14px 30px;font-size:16px;border-radius:2px;}
+
+.product-card, .equip-card{will-change:transform;}
+
+.back-to-top{
+  position:fixed;right:22px;bottom:22px;width:46px;height:46px;border-radius:50%;
+  background:var(--navy);color:var(--gold-light);display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .3s ease, transform .3s ease, visibility .3s, background .3s, color .3s;
+  cursor:pointer;z-index:90;box-shadow:0 12px 28px -10px rgba(11,27,46,0.4);border:none;
+}
+.back-to-top.show{opacity:1;visibility:visible;transform:translateY(0);}
+.back-to-top:hover{background:var(--gold-light);color:var(--navy);}
+.back-to-top svg{width:18px;height:18px;}
+
+.draw-line{stroke-dasharray:130;stroke-dashoffset:130;animation:draw-in 1.6s ease forwards;}
+@keyframes draw-in{to{stroke-dashoffset:0;}}
+@media (prefers-reduced-motion: reduce){
+  .draw-line{animation:none;stroke-dashoffset:0;}
+}
 </style>
 </head>
 <body>
+
+<div class="scroll-progress"></div>
 
 <header>
   <div class="nav">
@@ -417,6 +471,19 @@ footer{padding:52px 0 38px;background:var(--navy);color:rgba(239,233,220,0.6);}
     <button class="burger" aria-label="메뉴"><span></span><span></span><span></span></button>
   </div>
 </header>
+
+<div class="mobile-nav-overlay">
+  <a href="#about">회사소개<span class="msub">ABOUT</span></a>
+  <a href="#workflow">프로세스<span class="msub">WORKFLOW</span></a>
+  <a href="#products">솔루션<span class="msub">SOLUTION</span></a>
+  <a href="#gallery">케이스<span class="msub">CASE</span></a>
+  <a href="#contact">문의<span class="msub">CONTACT</span></a>
+  <a href="#contact" class="mcta">케이스 문의하기 →</a>
+</div>
+
+<button class="back-to-top" aria-label="맨 위로">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
 
 <main id="top">
 
@@ -454,7 +521,7 @@ footer{padding:52px 0 38px;background:var(--navy);color:rgba(239,233,220,0.6);}
                   fill="none" stroke="#0B1B2E" stroke-width="1.4" opacity="0.45"/>
             <path d="M200 30 C120 30 90 90 92 160 C94 230 120 250 128 320 C134 372 160 400 178 400 C192 400 196 360 200 320 L200 30 Z"
                   fill="url(#meshDots)"/>
-            <g stroke="#1B6FBF" stroke-width="0.7" opacity="0.5">
+            <g class="draw-line" stroke="#1B6FBF" stroke-width="0.7" opacity="0.5">
               <line x1="120" y1="80" x2="160" y2="140"/>
               <line x1="160" y1="140" x2="130" y2="200"/>
               <line x1="130" y1="200" x2="165" y2="260"/>
@@ -738,16 +805,41 @@ footer{padding:52px 0 38px;background:var(--navy);color:rgba(239,233,220,0.6);}
 </footer>
 
 <script>
-document.querySelector('.burger').addEventListener('click', function(){
-  var nl = document.querySelector('.navlinks');
-  var isOpen = nl.style.display === 'flex';
-  nl.style.display = isOpen ? 'none' : 'flex';
-  nl.style.position='fixed'; nl.style.top='78px'; nl.style.left='0'; nl.style.right='0';
-  nl.style.background='#FBFAF5'; nl.style.flexDirection='column'; nl.style.padding='22px 28px';
-  nl.style.borderBottom='1px solid rgba(11,27,46,0.1)'; nl.style.gap='16px'; nl.style.alignItems='flex-start';
+var burgerBtn = document.querySelector('.burger');
+var overlay = document.querySelector('.mobile-nav-overlay');
+function closeMobileNav(){
+  overlay.classList.remove('open');
+  burgerBtn.classList.remove('open');
+  document.body.style.overflow = '';
+}
+burgerBtn.addEventListener('click', function(){
+  var isOpen = overlay.classList.toggle('open');
+  burgerBtn.classList.toggle('open', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+});
+overlay.querySelectorAll('a').forEach(function(a){
+  a.addEventListener('click', closeMobileNav);
 });
 
-// scroll reveal — left/right/up entrance as sections come into view
+var progressBar = document.querySelector('.scroll-progress');
+var headerEl = document.querySelector('header');
+var backToTopBtn = document.querySelector('.back-to-top');
+function onScroll(){
+  var h = document.documentElement;
+  var max = h.scrollHeight - h.clientHeight;
+  var pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+  progressBar.style.width = pct + '%';
+  if(h.scrollTop > 40){ headerEl.classList.add('scrolled'); }
+  else { headerEl.classList.remove('scrolled'); }
+  if(h.scrollTop > window.innerHeight * 0.6){ backToTopBtn.classList.add('show'); }
+  else { backToTopBtn.classList.remove('show'); }
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+onScroll();
+backToTopBtn.addEventListener('click', function(){
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
 (function(){
   var els = document.querySelectorAll('.reveal');
   if(!('IntersectionObserver' in window)){
@@ -764,6 +856,53 @@ document.querySelector('.burger').addEventListener('click', function(){
   }, {threshold:0.15, rootMargin:'0px 0px -70px 0px'});
   els.forEach(function(el){ io.observe(el); });
 })();
+
+(function(){
+  var nums = document.querySelectorAll('.stat-num span');
+  if(!('IntersectionObserver' in window)){ return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(!entry.isIntersecting) return;
+      var el = entry.target;
+      var target = parseInt(el.textContent.replace(/[^0-9]/g,''), 10);
+      if(isNaN(target)){ return; }
+      var duration = 1500;
+      var start = null;
+      function step(ts){
+        if(start === null) start = ts;
+        var p = Math.min((ts - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(eased * target).toLocaleString('en-US');
+        if(p < 1){ requestAnimationFrame(step); }
+        else { el.textContent = target.toLocaleString('en-US'); }
+      }
+      requestAnimationFrame(step);
+      io.unobserve(el);
+    });
+  }, {threshold:0.6});
+  nums.forEach(function(el){ io.observe(el); });
+})();
+
+if(window.matchMedia('(hover: hover) and (pointer: fine)').matches){
+  document.querySelectorAll('.product-card, .equip-card').forEach(function(card){
+    card.addEventListener('mousemove', function(e){
+      var r = card.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - 0.5;
+      var y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = 'perspective(800px) rotateX(' + (-y*5) + 'deg) rotateY(' + (x*5) + 'deg) translateY(-6px)';
+    });
+    card.addEventListener('mouseleave', function(){ card.style.transform = ''; });
+  });
+  document.querySelectorAll('.btn').forEach(function(btn){
+    btn.addEventListener('mousemove', function(e){
+      var r = btn.getBoundingClientRect();
+      var x = (e.clientX - r.left - r.width/2) * 0.22;
+      var y = (e.clientY - r.top - r.height/2) * 0.32;
+      btn.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    });
+    btn.addEventListener('mouseleave', function(){ btn.style.transform = ''; });
+  });
+}
 </script>
 
 </body>
