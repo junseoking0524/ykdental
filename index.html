@@ -122,15 +122,14 @@ header{
   max-height:920px;
   box-sizing:border-box;
   padding:96px 0 56px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:grid;
+  place-items:center;
 }
 .hero-mark{
   position:absolute;top:106px;right:40px;width:64px;height:64px;opacity:0.95;z-index:2;
 }
 .hero-wrap{
-  position:relative;z-index:2;width:100%;max-width:1180px;margin:0 auto;padding:0 28px;
+  position:relative;z-index:2;max-width:1180px;margin-left:auto;margin-right:auto;padding:0 28px;
   display:grid;grid-template-columns:1.05fr 0.95fr;gap:44px;align-items:center;
 }
 .hero-eyebrow{color:var(--royal);}
@@ -209,18 +208,28 @@ header{
   background:linear-gradient(90deg, var(--gold) 0%, var(--line-gold) 40%, transparent 85%);}
 .workflow-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:56px;}
 .wf-track{position:relative;}
-.wf-grid{display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr 28px 1fr 28px 1fr;gap:0;position:relative;align-items:stretch;}
-.wf-arrow{display:flex;align-items:center;justify-content:center;color:var(--line-gold);font-size:18px;font-weight:700;transition:color .35s ease;}
-.wf-track:hover .wf-arrow{color:var(--gold);animation:arrow-flow 1.1s ease-in-out infinite;}
-.wf-grid > .wf-arrow:nth-child(2){animation-delay:0s;}
-.wf-grid > .wf-arrow:nth-child(4){animation-delay:.12s;}
-.wf-grid > .wf-arrow:nth-child(6){animation-delay:.24s;}
-.wf-grid > .wf-arrow:nth-child(8){animation-delay:.36s;}
-@keyframes arrow-flow{0%,100%{transform:translateX(0);opacity:0.7;}50%{transform:translateX(5px);opacity:1;}}
-@media (prefers-reduced-motion: reduce){
-  .wf-track:hover .wf-arrow{animation:none;}
+.wf-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;border-radius:2px;overflow:hidden;box-shadow:0 18px 44px -24px rgba(11,27,46,0.3);}
+.wf-step{padding:30px 26px 28px;position:relative;}
+.wf-step:not(:last-child)::after{
+  content:"";position:absolute;right:0;top:0;bottom:0;width:1px;
+  background:rgba(255,255,255,0.25);z-index:1;
 }
-.wf-step{padding:30px 22px 28px;}
+.wf-connector{
+  position:absolute;right:-15px;top:50%;transform:translateY(-50%);
+  width:30px;height:30px;border-radius:50%;
+  background:var(--paper);border:1.5px solid var(--line-gold);
+  color:var(--navy);font-size:13px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  z-index:5;transition:background .35s ease, border-color .35s ease, color .35s ease, transform .35s ease;
+}
+.wf-track:hover .wf-connector{background:var(--gold);border-color:var(--gold);color:var(--navy);transform:translateY(-50%) scale(1.12);}
+.wf-step:nth-child(1) .wf-connector{transition-delay:0s;}
+.wf-step:nth-child(2) .wf-connector{transition-delay:.08s;}
+.wf-step:nth-child(3) .wf-connector{transition-delay:.16s;}
+.wf-step:nth-child(4) .wf-connector{transition-delay:.24s;}
+@media (prefers-reduced-motion: reduce){
+  .wf-track:hover .wf-connector{transform:translateY(-50%);}
+}
 .wf-step:nth-child(1){background:#EEF3FA;}
 .wf-step:nth-child(2){background:#CBDBEF;}
 .wf-step:nth-child(3){background:#7FA1CE;}
@@ -358,43 +367,76 @@ footer{padding:52px 0 38px;background:var(--navy);color:rgba(239,233,220,0.6);}
 .foot-logo .kr{font-family:'IBM Plex Mono';font-size:9px;color:rgba(228,204,150,0.6);}
 .foot-grid{font-size:11.5px;text-align:right;line-height:1.85;}
 
+/* ---------- OVERFLOW / CENTERING SAFETY ----------
+   grid & flex children default to a content-based min-width, so a long
+   unbreakable label (e.g. "5-Axis Milling Machine") can force a track
+   wider than the viewport. Combined with overflow-x:hidden on <html>/<body>
+   this silently clips the right edge and makes everything read as
+   "off-center". min-width:0 + minmax(0,1fr) let tracks actually shrink. */
+.wrap,.hero-wrap,.about-grid,.stats .wrap,.wf-grid,.products-grid,
+.equip-grid,.contact-grid,.gallery-track,.foot-inner{min-width:0;}
+.wf-step,.product-card,.equip-card,.contact-card,.gal-card,
+.about-actions,.stat-num,.info-row{min-width:0;}
+.stats .wrap{grid-template-columns:repeat(3,minmax(0,1fr));}
+.products-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+.equip-grid{grid-template-columns:repeat(4,minmax(0,1fr));}
+.wf-grid{grid-template-columns:repeat(5,minmax(0,1fr));}
+.contact-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+.about-grid{grid-template-columns:minmax(0,1.5fr) minmax(0,0.9fr);}
+
 /* ---------- RESPONSIVE ---------- */
 @media (max-width:980px){
-  .hero{aspect-ratio:auto;min-height:auto;max-height:none;padding:118px 0 60px;}
-  .hero-wrap{grid-template-columns:1fr;gap:36px;text-align:center;}
+  section{padding:104px 0;}
+  #workflow{padding-top:116px;}
+  .hero{aspect-ratio:auto;min-height:auto;max-height:none;padding:112px 0 52px;}
+  .hero-wrap{grid-template-columns:1fr;gap:32px;text-align:center;}
   .hero-wrap .hero-actions{justify-content:center;}
   .hero-wrap .lead{margin:0 auto;}
   .hero-wrap .hero-eyebrow{justify-content:center;}
-  .hero-visual{order:-1;max-width:280px;}
-  .hero-mark{width:52px;height:52px;top:94px;right:22px;}
-  .about-grid{grid-template-columns:1fr;gap:28px;}
+  .hero-visual{order:-1;max-width:260px;}
+  .hero-mark{width:52px;height:52px;top:88px;right:20px;}
+  .about-grid{grid-template-columns:minmax(0,1fr);gap:24px;}
   .about-actions{flex-direction:row;}
-  .stats .wrap{grid-template-columns:1fr;gap:26px;text-align:left;}
-  .wf-grid{grid-template-columns:repeat(2,1fr);row-gap:22px;column-gap:22px;}
-  .wf-arrow{display:none;}
-  .products-grid{grid-template-columns:repeat(2,1fr);}
+  .stats{padding:56px 0;}
+  .stats .wrap{grid-template-columns:minmax(0,1fr);gap:22px;text-align:left;}
+  .workflow-head{margin-bottom:32px;}
+  .section-divider{margin:0 auto 36px;}
+  .wf-grid{grid-template-columns:repeat(2,minmax(0,1fr));box-shadow:none;}
+  .wf-step:nth-child(2n)::after{display:none;}
+  .wf-connector{display:none;}
+  .products-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:32px;}
+  .gallery-viewport{margin-top:32px;}
   .gal-card{flex:0 0 200px;}
-  .equip-grid{grid-template-columns:repeat(2,1fr);}
-  .contact-grid{grid-template-columns:1fr;gap:34px;}
+  .equip-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:32px;}
+  .contact-grid{grid-template-columns:minmax(0,1fr);gap:28px;margin-top:32px;}
   .navlinks{display:none;}
   .nav-cta{display:none;}
   .burger{display:flex;}
   .foot-inner{flex-direction:column;align-items:flex-start;}
   .foot-grid{text-align:left;}
-  .hero-mark{width:54px;height:54px;top:94px;right:22px;}
 }
 @media (max-width:560px){
-  section{padding:80px 0;}
-  .hero{padding:104px 0 48px;}
-  #workflow{padding-top:96px;}
+  section{padding:60px 0;}
+  .hero{padding:96px 0 40px;}
+  #workflow{padding-top:68px;}
+  .about-strip{padding:56px 0;}
   .about-actions{flex-direction:column;}
-  .wf-grid{grid-template-columns:1fr;row-gap:16px;}
-  .products-grid{grid-template-columns:1fr;}
+  .stats{padding:44px 0;}
+  .workflow-head{margin-bottom:26px;}
+  .section-divider{margin:0 auto 26px;}
+  .wf-grid{grid-template-columns:minmax(0,1fr);row-gap:0;box-shadow:none;}
+  .wf-step:not(:last-child)::after{right:0;bottom:0;top:auto;left:0;width:auto;height:1px;}
+  .wf-step{padding:22px 20px;}
+  .products-grid{grid-template-columns:minmax(0,1fr);margin-top:26px;gap:16px;}
+  .product-card{padding:26px 22px;}
+  .gallery-viewport{margin-top:26px;}
   .gal-card{flex:0 0 168px;}
-  .equip-grid{grid-template-columns:1fr;}
+  .equip-grid{grid-template-columns:minmax(0,1fr);margin-top:26px;gap:16px;}
+  .equip-card{padding:22px 18px;}
   .hero-actions{flex-direction:column;align-items:stretch;}
   .stat-num{font-size:30px;}
-  .contact-card{padding:24px;}
+  .contact-grid{margin-top:26px;}
+  .contact-card{padding:22px;}
 }
 
 /* ---------- MOBILE: TRIM SECONDARY ENGLISH ---------- */
@@ -633,32 +675,32 @@ header.scrolled{background:rgba(251,250,245,0.97);}
           <div class="wf-title">스캔 접수</div>
           <span class="wf-title-en">Scan Intake</span>
           <p class="wf-desc">3Shape, 메디트 등 구강 스캔 데이터를 받아 접수합니다.</p>
+          <span class="wf-connector">→</span>
         </div>
-        <div class="wf-arrow">→</div>
         <div class="wf-step reveal reveal-left wf-slow d2">
           <div class="wf-num">02</div>
           <span class="wf-tag">DIGITAL</span>
           <div class="wf-title">CAD 설계</div>
           <span class="wf-title-en">CAD Design</span>
           <p class="wf-desc">교합·마진을 정밀 분석해 보철물을 디자인합니다.</p>
+          <span class="wf-connector">→</span>
         </div>
-        <div class="wf-arrow">→</div>
         <div class="wf-step reveal reveal-left wf-slow d3">
           <div class="wf-num">03</div>
           <span class="wf-tag">DIGITAL</span>
           <div class="wf-title">밀링 · 신터링</div>
           <span class="wf-title-en">Milling &amp; Sintering</span>
           <p class="wf-desc">지르코니아 블록을 가공하고 고온 소결합니다.</p>
+          <span class="wf-connector">→</span>
         </div>
-        <div class="wf-arrow">→</div>
         <div class="wf-step reveal reveal-left wf-slow d4">
           <div class="wf-num">04</div>
           <span class="wf-tag">ANALOG</span>
           <div class="wf-title">핸드 빌드업</div>
           <span class="wf-title-en">Hand Build-up</span>
           <p class="wf-desc">20년 경력 기공사가 색조와 형태를 직접 완성합니다.</p>
+          <span class="wf-connector">→</span>
         </div>
-        <div class="wf-arrow">→</div>
         <div class="wf-step reveal reveal-left wf-slow d5">
           <div class="wf-num">05</div>
           <span class="wf-tag">ANALOG</span>
