@@ -232,15 +232,30 @@ header{
   content:"";position:absolute;right:0;top:0;bottom:0;width:1px;
   background:rgba(255,255,255,0.25);z-index:1;
 }
+/* ---------- CONNECTOR (redesigned) ----------
+   Previously a large circle vertically centered on the whole box (top:50%),
+   which visually landed right on top of the title text. Moved up to sit
+   exactly level with the numbered step-circles (30px padding + half of the
+   46px circle = 53px) and given short tick-lines on either side, so it
+   reads as a timeline node between the numbers rather than a badge
+   floating over the copy. */
 .wf-connector{
-  position:absolute;right:-15px;top:50%;transform:translateY(-50%);
-  width:30px;height:30px;border-radius:50%;
+  position:absolute;right:-13px;top:53px;transform:translateY(-50%);
+  width:26px;height:26px;border-radius:50%;
   background:var(--paper);border:1.5px solid var(--line-gold);
-  color:var(--navy);font-size:13px;font-weight:800;
+  color:var(--navy);font-size:11px;font-weight:800;
   display:flex;align-items:center;justify-content:center;
   z-index:5;transition:background .35s ease, border-color .35s ease, color .35s ease, transform .35s ease;
 }
-.wf-track:hover .wf-connector{background:var(--gold);border-color:var(--gold);color:var(--navy);transform:translateY(-50%) scale(1.12);}
+.wf-connector::before,.wf-connector::after{
+  content:"";position:absolute;top:50%;width:9px;height:1px;
+  background:var(--line-gold);transform:translateY(-50%);
+  transition:background .35s ease;
+}
+.wf-connector::before{right:100%;}
+.wf-connector::after{left:100%;}
+.wf-track:hover .wf-connector{background:var(--gold);border-color:var(--gold);color:var(--navy);transform:translateY(-50%) scale(1.15);}
+.wf-track:hover .wf-connector::before,.wf-track:hover .wf-connector::after{background:var(--gold);}
 .wf-step:nth-child(1) .wf-connector{transition-delay:0s;}
 .wf-step:nth-child(2) .wf-connector{transition-delay:.08s;}
 .wf-step:nth-child(3) .wf-connector{transition-delay:.16s;}
@@ -526,6 +541,81 @@ header.scrolled{background:rgba(251,250,245,0.97);}
 .back-to-top:hover{background:var(--gold-light);color:var(--navy);}
 .back-to-top svg{width:18px;height:18px;}
 
+/* ---------- INQUIRY TRIGGER ROW ---------- */
+.inquiry-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
+.inquiry-trigger{
+  background:var(--paper);border:1px solid var(--line-gold);border-radius:2px;
+  padding:22px 20px;text-align:left;cursor:pointer;font-family:inherit;
+  transition:background .25s, border-color .25s, transform .25s cubic-bezier(.16,.8,.24,1);
+}
+.inquiry-trigger:hover{background:var(--navy);border-color:var(--navy);transform:translateY(-4px);}
+.inquiry-trigger .it-tag{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.1em;color:var(--gold);display:block;margin-bottom:8px;transition:color .25s;}
+.inquiry-trigger:hover .it-tag{color:var(--gold-light);}
+.inquiry-trigger .it-title{font-size:16.5px;font-weight:800;color:var(--navy);display:block;transition:color .25s;}
+.inquiry-trigger:hover .it-title{color:#F7F3E9;}
+.inquiry-trigger .it-arrow{font-family:'IBM Plex Mono';font-size:12px;color:var(--grey);margin-top:10px;display:block;transition:color .25s, transform .25s;}
+.inquiry-trigger:hover .it-arrow{color:var(--gold-light);transform:translateX(4px);}
+
+/* ---------- INQUIRY MODALS ---------- */
+.modal-overlay{
+  position:fixed;inset:0;z-index:300;background:rgba(11,27,46,0.55);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:64px 20px;overflow-y:auto;
+  opacity:0;visibility:hidden;transition:opacity .3s ease, visibility .3s ease;
+  backdrop-filter:blur(3px);
+}
+.modal-overlay.open{opacity:1;visibility:visible;}
+.modal-card{
+  background:var(--paper);width:100%;max-width:560px;border-radius:3px;
+  box-shadow:0 40px 80px -20px rgba(11,27,46,0.5);position:relative;
+  transform:translateY(24px);transition:transform .35s cubic-bezier(.16,.8,.24,1);
+}
+.modal-overlay.open .modal-card{transform:translateY(0);}
+.modal-head{padding:30px 32px 0;}
+.modal-close{
+  position:absolute;top:20px;right:20px;width:34px;height:34px;border-radius:50%;
+  background:none;border:1px solid var(--line-gold);color:var(--navy);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .25s, color .25s;
+}
+.modal-close:hover{background:var(--navy);color:var(--gold-light);}
+.modal-close svg{width:16px;height:16px;}
+.modal-eyebrow{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.modal-title{font-size:23px;font-weight:800;color:var(--navy);margin-bottom:10px;}
+.modal-desc{font-size:14px;color:var(--grey);line-height:1.7;margin-bottom:6px;}
+.modal-form{padding:26px 32px 32px;}
+.form-group{margin-bottom:20px;}
+.form-group label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.form-group label .req{color:#C0392B;margin-left:2px;}
+.form-group input[type="text"],.form-group input[type="tel"],.form-group input[type="email"],
+.form-group select,.form-group textarea{
+  width:100%;padding:13px 14px;border:1px solid var(--line-gold);border-radius:2px;
+  background:#fff;color:var(--ink);font-family:inherit;font-size:14.5px;
+  transition:border-color .25s, box-shadow .25s;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+  outline:none;border-color:var(--royal);box-shadow:0 0 0 3px rgba(44,94,168,0.12);
+}
+.form-group textarea{resize:vertical;min-height:90px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-charcount{font-family:'IBM Plex Mono';font-size:10.5px;color:var(--grey);text-align:right;margin-top:6px;}
+.form-check{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--grey);margin-bottom:24px;line-height:1.6;}
+.form-check input{margin-top:3px;flex-shrink:0;}
+.modal-submit{width:100%;justify-content:center;padding:15px;font-size:15px;}
+.modal-submit[disabled]{opacity:0.55;cursor:not-allowed;}
+.form-status{
+  margin-top:16px;padding:14px 16px;border-radius:2px;font-size:13.5px;line-height:1.6;
+  display:none;
+}
+.form-status.show{display:block;}
+.form-status.ok{background:rgba(27,111,191,0.08);border:1px solid rgba(27,111,191,0.3);color:var(--royal);}
+.form-status.err{background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.3);color:#C0392B;}
+@media (max-width:640px){
+  .inquiry-row{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .modal-overlay{padding:0;align-items:flex-end;}
+  .modal-card{max-width:none;border-radius:16px 16px 0 0;max-height:92vh;overflow-y:auto;}
+}
+
 /* ---------- HERO SVG DRAW-IN ---------- */
 .draw-line{stroke-dasharray:130;stroke-dashoffset:130;animation:draw-in 1.6s ease forwards;}
 @keyframes draw-in{to{stroke-dashoffset:0;}}
@@ -571,6 +661,200 @@ header.scrolled{background:rgba(251,250,245,0.97);}
 <button class="back-to-top" aria-label="맨 위로">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
+
+<!-- ============ INQUIRY MODALS ============ -->
+
+<!-- 1. 샘플 테스트 신청 -->
+<div class="modal-overlay" id="modal-sample" data-modal>
+  <div class="modal-card">
+    <button type="button" class="modal-close" data-modal-close aria-label="닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-head">
+      <div class="modal-eyebrow">FREE SAMPLE · 샘플 테스트 신청</div>
+      <div class="modal-title">샘플 테스트 신청</div>
+      <p class="modal-desc">안녕하세요, YK Dental Lab.입니다.<br>보철물 무료 샘플 테스트(2 Cases)를 위한 정보 입력을 부탁드립니다. 친절하게, 세심하게 도와드리겠습니다.</p>
+    </div>
+    <form class="modal-form" data-inquiry-form data-form-subject="[YK Dental Lab] 샘플 테스트 신청">
+      <input type="hidden" name="_subject" value="[YK Dental Lab] 샘플 테스트 신청">
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+      <div class="form-group">
+        <label>원장님 성함<span class="req">*</span></label>
+        <input type="text" name="원장님 성함" placeholder="원장님 성함을 입력해주세요." required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>치과명<span class="req">*</span></label>
+          <input type="text" name="치과명" placeholder="치과명을 입력해주세요." required>
+        </div>
+        <div class="form-group">
+          <label>치과 전화번호<span class="req">*</span></label>
+          <input type="tel" name="치과 전화번호" placeholder="연락 가능한 번호" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>치과 주소<span class="req">*</span></label>
+        <input type="text" name="치과 주소" placeholder="치과 주소를 입력해주세요." required>
+      </div>
+      <div class="form-group">
+        <label>무료 샘플 희망 보철물<span class="req">*</span></label>
+        <select name="무료 샘플 희망 보철물" required>
+          <option value="" disabled selected>보철물 유형을 선택해주세요.</option>
+          <option>지르코니아</option>
+          <option>임플란트 커스텀 어버트먼트</option>
+          <option>올세라믹 · 라미네이트</option>
+          <option>PFM · 크라운 · 인레이</option>
+          <option>틀니</option>
+          <option>디지털 틀니</option>
+          <option>기타</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>인상 채득 유형<span class="req">*</span></label>
+        <select name="인상 채득 유형" required>
+          <option value="" disabled selected>인상 채득 유형을 선택해주세요.</option>
+          <option>아날로그 임프레션</option>
+          <option>3Shape Trios 시리즈</option>
+          <option>MEDIT (i500-700)</option>
+          <option>기타 구강스캐너</option>
+          <option>기타</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>컨택 유형<span class="req">*</span></label>
+        <select name="컨택 유형" required>
+          <option value="" disabled selected>컨택 유형을 선택해주세요.</option>
+          <option>방문</option>
+          <option>문자</option>
+          <option>전화</option>
+          <option>기타</option>
+        </select>
+      </div>
+      <label class="form-check">
+        <input type="checkbox" name="개인정보 동의" value="동의" required>
+        <span>개인정보 수집 및 이용에 동의합니다. (필수)<br><small style="color:var(--grey);font-size:11.5px;line-height:1.6;display:block;margin-top:4px;">수집 항목: 성함, 치과·업체명, 연락처, 이메일, 주소, 문의 내용 · 이용 목적: 샘플 테스트 접수 및 연락 · 보유 기간: 문의 처리 완료 후 1년(이후 파기). 동의를 거부할 수 있으나, 거부 시 문의 접수가 제한됩니다.</small></span>
+      </label>
+      <button type="submit" class="btn btn-gold modal-submit">신청하기 →</button>
+      <div class="form-status" data-form-status></div>
+    </form>
+  </div>
+</div>
+
+<!-- 2. 수가표 문의 -->
+<div class="modal-overlay" id="modal-price" data-modal>
+  <div class="modal-card">
+    <button type="button" class="modal-close" data-modal-close aria-label="닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-head">
+      <div class="modal-eyebrow">PRICE LIST · 수가표 문의</div>
+      <div class="modal-title">수가표 문의</div>
+      <p class="modal-desc">품목별 수가표 안내를 도와드립니다. 아래 정보를 남겨주시면 빠르게 회신드리겠습니다.</p>
+    </div>
+    <form class="modal-form" data-inquiry-form data-form-subject="[YK Dental Lab] 수가표 문의">
+      <input type="hidden" name="_subject" value="[YK Dental Lab] 수가표 문의">
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+      <div class="form-row">
+        <div class="form-group">
+          <label>치과명<span class="req">*</span></label>
+          <input type="text" name="치과명" placeholder="치과명을 입력해주세요." required>
+        </div>
+        <div class="form-group">
+          <label>원장님/담당자 성함<span class="req">*</span></label>
+          <input type="text" name="담당자 성함" placeholder="성함을 입력해주세요." required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>연락처<span class="req">*</span></label>
+          <input type="tel" name="연락처" placeholder="연락 가능한 번호" required>
+        </div>
+        <div class="form-group">
+          <label>이메일</label>
+          <input type="email" name="이메일" placeholder="수가표를 받으실 이메일">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>문의 내용</label>
+        <textarea name="문의 내용" placeholder="궁금하신 품목이나 내용을 적어주세요."></textarea>
+      </div>
+      <label class="form-check">
+        <input type="checkbox" name="개인정보 동의" value="동의" required>
+        <span>개인정보 수집 및 이용에 동의합니다. (필수)<br><small style="color:var(--grey);font-size:11.5px;line-height:1.6;display:block;margin-top:4px;">수집 항목: 성함, 치과·업체명, 연락처, 이메일, 주소, 문의 내용 · 이용 목적: 수가표 문의 응대 · 보유 기간: 문의 처리 완료 후 1년(이후 파기). 동의를 거부할 수 있으나, 거부 시 문의 접수가 제한됩니다.</small></span>
+      </label>
+      <button type="submit" class="btn btn-gold modal-submit">문의하기 →</button>
+      <div class="form-status" data-form-status></div>
+    </form>
+  </div>
+</div>
+
+<!-- 3. 비즈니스 제휴 문의 -->
+<div class="modal-overlay" id="modal-biz" data-modal>
+  <div class="modal-card">
+    <button type="button" class="modal-close" data-modal-close aria-label="닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-head">
+      <div class="modal-eyebrow">PARTNERSHIP · 비즈니스 제휴 문의</div>
+      <div class="modal-title">비즈니스 제휴 문의</div>
+      <p class="modal-desc">본 문의는 기업 및 기관 제휴 문의 전용입니다.<br>개인 환자 대상 의료 상담 및 진료 문의는 지원되지 않습니다.</p>
+    </div>
+    <form class="modal-form" data-inquiry-form data-form-subject="[YK Dental Lab] 비즈니스 제휴 문의">
+      <input type="hidden" name="_subject" value="[YK Dental Lab] 비즈니스 제휴 문의">
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+      <div class="form-group">
+        <label>업체 유형<span class="req">*</span></label>
+        <select name="업체 유형" required>
+          <option value="" disabled selected>업체 유형을 선택해주세요.</option>
+          <option>치과 병·의원</option>
+          <option>기공소</option>
+          <option>사업자(개인 또는 법인)</option>
+          <option>기타(치과 관련 사업자)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>문의 유형<span class="req">*</span></label>
+        <select name="문의 유형" required>
+          <option value="" disabled selected>문의 유형을 선택해주세요.</option>
+          <option>제휴 문의</option>
+          <option>납품 문의</option>
+          <option>기타 문의</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>성함<span class="req">*</span></label>
+          <input type="text" name="성함" placeholder="성함을 입력해주세요." required>
+        </div>
+        <div class="form-group">
+          <label>업체명<span class="req">*</span></label>
+          <input type="text" name="업체명" placeholder="업체명을 입력해주세요." required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>연락처<span class="req">*</span></label>
+          <input type="tel" name="연락처" placeholder="연락처를 입력해주세요." required>
+        </div>
+        <div class="form-group">
+          <label>이메일<span class="req">*</span></label>
+          <input type="email" name="이메일" placeholder="이메일을 입력해주세요." required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>기타 문의사항</label>
+        <textarea name="기타 문의사항" maxlength="500" placeholder="문의사항을 입력해주세요." data-char-target></textarea>
+        <div class="form-charcount"><span data-char-count>0</span> / 500자</div>
+      </div>
+      <label class="form-check">
+        <input type="checkbox" name="개인정보 동의" value="동의" required>
+        <span>개인정보 수집 및 이용에 동의합니다. (필수)<br><small style="color:var(--grey);font-size:11.5px;line-height:1.6;display:block;margin-top:4px;">수집 항목: 성함, 치과·업체명, 연락처, 이메일, 주소, 문의 내용 · 이용 목적: 제휴 문의 응대 · 보유 기간: 문의 처리 완료 후 1년(이후 파기). 동의를 거부할 수 있으나, 거부 시 문의 접수가 제한됩니다.</small></span>
+      </label>
+      <button type="submit" class="btn btn-gold modal-submit">문의하기 →</button>
+      <div class="form-status" data-form-status></div>
+    </form>
+  </div>
+</div>
 
 <main id="top">
 
@@ -865,6 +1149,24 @@ header.scrolled{background:rgba(251,250,245,0.97);}
       <p class="lead">스캔 데이터 전송, 견적 문의는 아래 연락처로 부탁드립니다.</p>
     </div>
 
+    <div class="inquiry-row reveal reveal-up">
+      <button type="button" class="inquiry-trigger" data-modal-open="modal-sample">
+        <span class="it-tag">FREE SAMPLE</span>
+        <span class="it-title">샘플 테스트 신청</span>
+        <span class="it-arrow">보철물 무료 샘플 2 Cases →</span>
+      </button>
+      <button type="button" class="inquiry-trigger" data-modal-open="modal-price">
+        <span class="it-tag">PRICE LIST</span>
+        <span class="it-title">수가표 문의</span>
+        <span class="it-arrow">품목별 수가표 안내 →</span>
+      </button>
+      <button type="button" class="inquiry-trigger" data-modal-open="modal-biz">
+        <span class="it-tag">PARTNERSHIP</span>
+        <span class="it-title">비즈니스 제휴 문의</span>
+        <span class="it-arrow">기업·기관 전용 →</span>
+      </button>
+    </div>
+
     <div class="contact-grid">
       <div class="contact-card reveal reveal-left">
         <div class="info-row"><div class="k">대표전화</div><div class="v mono">02-744-2804</div></div>
@@ -1004,6 +1306,116 @@ if(window.matchMedia('(hover: hover) and (pointer: fine)').matches){
     btn.addEventListener('mouseleave', function(){ btn.style.transform = ''; });
   });
 }
+
+// ---------- INQUIRY MODALS ----------
+(function(){
+  // [1순위] Google Apps Script 웹앱(/exec) URL — 시트(DB) 적재 + 메일 발송. 배포 후 여기에 붙여넣으세요.
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjK23zEW_vdGnCukLSpji0DNnKDP2n9Tmc-ff24YQfAzEpckKOACYpLDDkXY4gyE4Alg/exec';
+  // [2순위/임시] APPS_SCRIPT_URL 이 비어 있을 때만 사용하는 FormSubmit (메일만, DB 기록 없음)
+  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/gogoist@naver.com';
+  var openBtns = document.querySelectorAll('[data-modal-open]');
+  var modals = document.querySelectorAll('[data-modal]');
+
+  function openModal(id){
+    var modal = document.getElementById(id);
+    if(!modal) return;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(modal){
+    modal.classList.remove('open');
+    var anyOpen = Array.prototype.some.call(modals, function(m){ return m.classList.contains('open'); });
+    if(!anyOpen){ document.body.style.overflow = ''; }
+  }
+  openBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){ openModal(btn.getAttribute('data-modal-open')); });
+  });
+  modals.forEach(function(modal){
+    modal.addEventListener('click', function(e){
+      if(e.target === modal){ closeModal(modal); }
+    });
+    modal.querySelectorAll('[data-modal-close]').forEach(function(btn){
+      btn.addEventListener('click', function(){ closeModal(modal); });
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      modals.forEach(function(modal){ if(modal.classList.contains('open')){ closeModal(modal); } });
+    }
+  });
+
+  // live char counter (비즈니스 제휴 문의 textarea)
+  document.querySelectorAll('[data-char-target]').forEach(function(ta){
+    var counter = ta.closest('.form-group').querySelector('[data-char-count]');
+    ta.addEventListener('input', function(){
+      counter.textContent = ta.value.length;
+    });
+  });
+
+  // submit handler — posts to FormSubmit (formsubmit.co), which forwards
+  // the field values by email without needing a backend of our own.
+  // NOTE: the FIRST submission to a new destination address triggers a
+  // one-time "activate your form" email from FormSubmit to that address;
+  // until that link is clicked, later submissions won't be delivered.
+  document.querySelectorAll('[data-inquiry-form]').forEach(function(form){
+    var statusEl = form.querySelector('[data-form-status]');
+    var submitBtn = form.querySelector('.modal-submit');
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(!form.checkValidity()){ form.reportValidity(); return; }
+
+      var data = {};
+      new FormData(form).forEach(function(value, key){
+        if(key === '_honey') return;
+        data[key] = value;
+      });
+      data['_subject'] = form.getAttribute('data-form-subject') || 'YK Dental Lab 문의';
+      data['문의구분'] = data['_subject'].replace('[YK Dental Lab] ', '');
+      data['접수 시각'] = new Date().toLocaleString('ko-KR', {timeZone:'Asia/Seoul'});
+      var honey = form.querySelector('[name="_honey"]');
+      data['_honey'] = honey ? honey.value : '';
+
+      submitBtn.disabled = true;
+      var originalLabel = submitBtn.textContent;
+      submitBtn.textContent = '전송 중...';
+      statusEl.className = 'form-status';
+
+      var request;
+      if(APPS_SCRIPT_URL){
+        // text/plain 으로 보내면 CORS 사전요청(preflight) 없이 Apps Script가 받을 수 있습니다.
+        request = fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: {'Content-Type':'text/plain;charset=utf-8'},
+          body: JSON.stringify(data)
+        });
+      } else {
+        data['_template'] = 'table';
+        request = fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json','Accept':'application/json'},
+          body: JSON.stringify(data)
+        });
+      }
+      request.then(function(res){
+        if(!res.ok) throw new Error('request failed');
+        return res.json();
+      }).then(function(r){
+        if(r && r.ok === false) throw new Error(r.error || 'rejected');
+        statusEl.textContent = '문의가 정상적으로 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.';
+        statusEl.className = 'form-status show ok';
+        form.reset();
+        document.querySelectorAll('[data-char-count]').forEach(function(c){ c.textContent = '0'; });
+        submitBtn.textContent = originalLabel;
+        submitBtn.disabled = false;
+      }).catch(function(){
+        statusEl.innerHTML = '전송 중 문제가 발생했습니다. 번거로우시겠지만 <a href="mailto:ykdentallab@daum.net" style="text-decoration:underline;">ykdentallab@daum.net</a> 또는 <a href="tel:02-744-2804" style="text-decoration:underline;">02-744-2804</a>로 연락 부탁드립니다.';
+        statusEl.className = 'form-status show err';
+        submitBtn.textContent = originalLabel;
+        submitBtn.disabled = false;
+      });
+    });
+  });
+})();
 </script>
 
 </body>
